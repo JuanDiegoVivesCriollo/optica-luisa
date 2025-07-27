@@ -1,0 +1,19 @@
+[
+  {
+    "id": "1753596362580uih6a603r",
+    "nombre_persona": "abel",
+    "monto_total": 23,
+    "descripcion": null,
+    "fecha_creacion": "2025-07-27T06:06:02.580Z",
+    "fecha_vencimiento": null,
+    "pagos": [
+      {
+        "id": "17535969007950cm3nei8g",
+        "monto": 11,
+        "descripcion": null,
+        "fecha": "2025-07-27T06:15:00.795Z"
+      }
+    ],
+    "updated_at": "2025-07-27T06:15:22.101Z"
+  }
+]

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Óptica Luisa - Sistema Administrativo</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1><i class="fas fa-glasses"></i> Óptica Luisa</h1>
+                <p>Sistema Administrativo</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-buttons">                <button class="nav-btn active" data-section="fichas">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Fichas</span>
+                </button>
+                <button class="nav-btn" data-section="nueva-ficha">
+                    <i class="fas fa-plus"></i>
+                    <span>Nueva Ficha</span>
+                </button>
+                <button class="nav-btn" data-section="deudas">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Deudas</span>
+                </button>
+                <button class="nav-btn" data-section="nueva-deuda">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Nueva Deuda</span>
+                </button>
+                <button class="nav-btn" data-section="estadisticas">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Stats</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            
+            <!-- Sección: Lista de Fichas -->
+            <section id="fichas-section" class="section active">
+                <div class="section-header">
+                    <h2><i class="fas fa-folder-open"></i> Fichas Almacenadas</h2>
+                    <div class="search-container">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Buscar por nombre...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fichas-grid" id="fichasGrid">
+                    <!-- Las fichas se cargarán aquí dinámicamente -->
+                </div>
+
+                <div class="loading" id="loading" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Cargando fichas...</p>
+                </div>
+
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fas fa-folder-open"></i>
+                    <h3>No hay fichas registradas</h3>
+                    <p>Comienza agregando una nueva ficha óptica</p>
+                    <button class="btn btn-primary" onclick="showSection('nueva-ficha')">
+                        <i class="fas fa-plus"></i> Crear Primera Ficha
+                    </button>
+                </div>
+            </section>
+
+            <!-- Sección: Nueva Ficha -->
+            <section id="nueva-ficha-section" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-plus-circle"></i> Nueva Ficha Óptica</h2>
+                </div>
+
+                <form id="fichaForm" class="ficha-form" enctype="multipart/form-data">
+                    <!-- Información Personal -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-user"></i> Información Personal</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="nombre">Nombre Completo *</label>
+                                <input type="text" id="nombre" name="nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="edad">Edad</label>
+                                <input type="number" id="edad" name="edad" min="0" max="120">
+                            </div>
+                            <div class="form-group span-2">
+                                <label for="direccion">Dirección</label>
+                                <input type="text" id="direccion" name="direccion">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visión de Lejos -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-eye"></i> Visión de Lejos</h3>
+                        
+                        <!-- Ojo Derecho -->
+                        <div class="eye-section">
+                            <h4><i class="fas fa-circle"></i> Ojo Derecho (OD)</h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="od_esfera">Esfera</label>
+                                    <input type="number" id="od_esfera" name="od_esfera" step="0.25" placeholder="±0.00">
+                                </div>
+                                <div class="form-group">
+                                    <label for="od_cilindro">Cilindro</label>
+                                    <input type="number" id="od_cilindro" name="od_cilindro" step="0.25" placeholder="±0.00">
+                                </div>
+                                <div class="form-group">
+                                    <label for="od_eje">Eje</label>
+                                    <input type="number" id="od_eje" name="od_eje" min="0" max="180" placeholder="0-180">
+                                </div>
+                                <div class="form-group">
+                                    <label for="od_av_cc">AV.cc</label>
+                                    <input type="text" id="od_av_cc" name="od_av_cc" placeholder="20/20">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ojo Izquierdo -->
+                        <div class="eye-section">
+                            <h4><i class="fas fa-circle"></i> Ojo Izquierdo (OI)</h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="oi_esfera">Esfera</label>
+                                    <input type="number" id="oi_esfera" name="oi_esfera" step="0.25" placeholder="±0.00">
+                                </div>
+                                <div class="form-group">
+                                    <label for="oi_cilindro">Cilindro</label>
+                                    <input type="number" id="oi_cilindro" name="oi_cilindro" step="0.25" placeholder="±0.00">
+                                </div>
+                                <div class="form-group">
+                                    <label for="oi_eje">Eje</label>
+                                    <input type="number" id="oi_eje" name="oi_eje" min="0" max="180" placeholder="0-180">
+                                </div>
+                                <div class="form-group">
+                                    <label for="oi_av_cc">AV.cc</label>
+                                    <input type="text" id="oi_av_cc" name="oi_av_cc" placeholder="20/20">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visión Adicional -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-low-vision"></i> Visión Adicional</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="vision_cerca_add">Visión de Cerca (ADD)</label>
+                                <input type="number" id="vision_cerca_add" name="vision_cerca_add" step="0.25" placeholder="+0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="vision_intermedia_add">Visión Intermedia (ADD)</label>
+                                <input type="number" id="vision_intermedia_add" name="vision_intermedia_add" step="0.25" placeholder="+0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="distancia_interpupilar">Distancia Interpupilar (mm)</label>
+                                <input type="number" id="distancia_interpupilar" name="distancia_interpupilar" min="40" max="80" placeholder="62">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recomendaciones -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-clipboard-list"></i> Recomendaciones</h3>
+                        <div class="form-group">
+                            <label for="recomendaciones">Notas y Recomendaciones</label>
+                            <textarea id="recomendaciones" name="recomendaciones" rows="4" placeholder="Escribe aquí cualquier recomendación especial..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Imagen de la Ficha -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-camera"></i> Imagen de la Ficha</h3>
+                        <div class="image-upload">
+                            <input type="file" id="imagen_ficha" name="imagen_ficha" accept="image/*" capture="environment">
+                            <label for="imagen_ficha" class="image-upload-label">
+                                <i class="fas fa-camera"></i>
+                                <span>Tomar Foto / Seleccionar Imagen</span>
+                            </label>
+                            <div class="image-preview" id="imagePreview" style="display: none;">
+                                <img id="previewImg" src="" alt="Vista previa">
+                                <button type="button" class="remove-image" onclick="removeImage()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                            <i class="fas fa-undo"></i> Limpiar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar Ficha
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Sección: Ver/Editar Ficha -->
+            <section id="ver-ficha-section" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-medical"></i> Detalles de la Ficha</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="showSection('fichas')">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </button>
+                        <button class="btn btn-primary" onclick="editarFicha()">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-danger" onclick="eliminarFicha()">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="fichaDetalles" class="ficha-detalles">
+                    <!-- Los detalles de la ficha se cargarán aquí -->
+                </div>            </section>
+
+            <!-- Sección: Lista de Deudas -->
+            <section id="deudas-section" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-money-bill-wave"></i> Gestión de Deudas</h2>
+                    <div class="search-container">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInputDeudas" placeholder="Buscar por nombre de persona...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="deudas-grid" id="deudasGrid">
+                    <!-- Las deudas se cargarán aquí dinámicamente -->
+                </div>
+
+                <div class="loading" id="loadingDeudas" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Cargando deudas...</p>
+                </div>
+
+                <div class="empty-state" id="emptyStateDeudas" style="display: none;">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <h3>No hay deudas registradas</h3>
+                    <p>Comienza registrando una nueva deuda</p>
+                    <button class="btn btn-primary" onclick="showSection('nueva-deuda')">
+                        <i class="fas fa-plus"></i> Crear Primera Deuda
+                    </button>
+                </div>
+            </section>
+
+            <!-- Sección: Nueva Deuda -->
+            <section id="nueva-deuda-section" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-plus-circle"></i> Nueva Deuda</h2>
+                </div>
+
+                <form id="deudaForm" class="ficha-form">
+                    <!-- Información de la Deuda -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-user"></i> Información de la Deuda</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="nombre_persona">Nombre de la Persona *</label>
+                                <input type="text" id="nombre_persona" name="nombre_persona" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="monto_total">Monto Total *</label>
+                                <input type="number" id="monto_total" name="monto_total" step="0.01" min="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fecha_vencimiento">Fecha de Vencimiento (Opcional)</label>
+                                <input type="date" id="fecha_vencimiento" name="fecha_vencimiento">
+                            </div>
+                            <div class="form-group span-2">
+                                <label for="descripcion">Descripción / Concepto</label>
+                                <textarea id="descripcion" name="descripcion" rows="3" placeholder="Ej: Préstamo semanal, compra de productos, etc..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="resetDeudaForm()">
+                            <i class="fas fa-undo"></i> Limpiar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Registrar Deuda
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Sección: Ver/Gestionar Deuda -->
+            <section id="ver-deuda-section" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-money-bill-wave"></i> Detalles de la Deuda</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="showSection('deudas')">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </button>
+                        <button class="btn btn-primary" onclick="editarDeuda()">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-danger" onclick="eliminarDeuda()">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="deudaDetalles" class="ficha-detalles">
+                    <!-- Los detalles de la deuda se cargarán aquí -->
+                </div>
+
+                <!-- Sección de Pagos -->
+                <div class="ficha-form" style="margin-top: 24px;">
+                    <div class="form-section">
+                        <h3><i class="fas fa-credit-card"></i> Registrar Nuevo Pago</h3>
+                        <form id="pagoForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="monto_pago">Monto del Pago *</label>
+                                    <input type="number" id="monto_pago" name="monto_pago" step="0.01" min="0.01" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="descripcion_pago">Descripción (Opcional)</label>
+                                    <input type="text" id="descripcion_pago" name="descripcion_pago" placeholder="Ej: Pago parcial, abono semanal...">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-credit-card"></i> Registrar Pago
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Historial de Pagos -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-history"></i> Historial de Pagos</h3>
+                        <div id="historialPagos">
+                            <!-- Los pagos se cargarán aquí -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección: Estadísticas -->
+            <section id="estadisticas-section" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-bar"></i> Estadísticas del Sistema</h2>
+                </div>
+                
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Las estadísticas se cargarán aquí -->
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Procesando...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>

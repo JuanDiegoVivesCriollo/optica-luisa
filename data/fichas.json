@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1753595598398yaylgreuw",
+    "nombre": "Juan Diego Vives Criollo",
+    "edad": 23,
+    "direccion": "Orión 2420",
+    "fecha_creacion": "2025-07-27T05:53:18.398Z",
+    "od_esfera": 0.25,
+    "od_cilindro": 2,
+    "od_eje": 167,
+    "od_av_cc": "20",
+    "oi_esfera": -0.25,
+    "oi_cilindro": 2,
+    "oi_eje": 180,
+    "oi_av_cc": "20/20",
+    "vision_cerca_add": null,
+    "vision_intermedia_add": null,
+    "distancia_interpupilar": 62,
+    "recomendaciones": null,
+    "imagen_ficha": "ficha-1753595598393-988085138.JPG",
+    "updated_at": "2025-07-27T05:53:18.398Z"
+  }
+]
