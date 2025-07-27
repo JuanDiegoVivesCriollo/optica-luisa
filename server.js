@@ -16,54 +16,56 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Configuración de multer para subida de imágenes
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'ficha-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
+// Configuración de multer para subida de imágenes (solo desarrollo local)
+let upload;
 
-const upload = multer({ 
-    storage: storage,
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype.startsWith('image/')) {
-            cb(null, true);
-        } else {
-            cb(new Error('Solo se permiten archivos de imagen'), false);
+if (isServerless) {
+    // En serverless, no permitimos upload de archivos
+    upload = multer({
+        storage: multer.memoryStorage(),
+        limits: { fileSize: 1024 } // 1KB limit para evitar uploads
+    });
+} else {
+    // Configuración normal para desarrollo local
+    const storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, 'uploads/');
+        },
+        filename: (req, file, cb) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            cb(null, 'ficha-' + uniqueSuffix + path.extname(file.originalname));
         }
-    },
-    limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB máximo
-    }
-});
+    });
 
-// Archivos JSON para almacenar los datos
-const FICHAS_FILE = path.join(__dirname, 'data', 'fichas.json');
-const DEUDAS_FILE = path.join(__dirname, 'data', 'deudas.json');
-
-// Asegurar que existan los directorios necesarios
-async function ensureDirectories() {
-    await fs.ensureDir('uploads');
-    await fs.ensureDir('data');
-    
-    // Crear archivo de fichas si no existe
-    if (!await fs.pathExists(FICHAS_FILE)) {
-        await fs.writeJson(FICHAS_FILE, []);
-    }
-    
-    // Crear archivo de deudas si no existe
-    if (!await fs.pathExists(DEUDAS_FILE)) {
-        await fs.writeJson(DEUDAS_FILE, []);
-    }
+    upload = multer({ 
+        storage: storage,
+        fileFilter: (req, file, cb) => {
+            if (file.mimetype.startsWith('image/')) {
+                cb(null, true);
+            } else {
+                cb(new Error('Solo se permiten archivos de imagen'), false);
+            }
+        },
+        limits: {
+            fileSize: 5 * 1024 * 1024 // 5MB máximo
+        }
+    });
 }
 
-// Funciones para manejar el archivo JSON
+// Archivos JSON para almacenar los datos (en memoria para serverless)
+let fichasData = [];
+let deudasData = [];
+
+// En entorno serverless, usamos variables en memoria
+const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME;
+
+// Funciones para manejar datos
 async function readFichas() {
+    if (isServerless) {
+        return fichasData;
+    }
     try {
+        const FICHAS_FILE = path.join(__dirname, 'data', 'fichas.json');
         return await fs.readJson(FICHAS_FILE);
     } catch (error) {
         console.error('Error leyendo fichas:', error);
@@ -72,7 +74,12 @@ async function readFichas() {
 }
 
 async function writeFichas(fichas) {
+    if (isServerless) {
+        fichasData = fichas;
+        return true;
+    }
     try {
+        const FICHAS_FILE = path.join(__dirname, 'data', 'fichas.json');
         await fs.writeJson(FICHAS_FILE, fichas, { spaces: 2 });
         return true;
     } catch (error) {
@@ -83,7 +90,11 @@ async function writeFichas(fichas) {
 
 // Funciones para manejar deudas
 async function readDeudas() {
+    if (isServerless) {
+        return deudasData;
+    }
     try {
+        const DEUDAS_FILE = path.join(__dirname, 'data', 'deudas.json');
         return await fs.readJson(DEUDAS_FILE);
     } catch (error) {
         console.error('Error leyendo deudas:', error);
@@ -92,12 +103,38 @@ async function readDeudas() {
 }
 
 async function writeDeudas(deudas) {
+    if (isServerless) {
+        deudasData = deudas;
+        return true;
+    }
     try {
+        const DEUDAS_FILE = path.join(__dirname, 'data', 'deudas.json');
         await fs.writeJson(DEUDAS_FILE, deudas, { spaces: 2 });
         return true;
     } catch (error) {
         console.error('Error escribiendo deudas:', error);
         return false;
+    }
+}
+
+// Asegurar que existan los directorios necesarios (solo en desarrollo local)
+async function ensureDirectories() {
+    if (!isServerless) {
+        const FICHAS_FILE = path.join(__dirname, 'data', 'fichas.json');
+        const DEUDAS_FILE = path.join(__dirname, 'data', 'deudas.json');
+        
+        await fs.ensureDir('uploads');
+        await fs.ensureDir('data');
+        
+        // Crear archivo de fichas si no existe
+        if (!await fs.pathExists(FICHAS_FILE)) {
+            await fs.writeJson(FICHAS_FILE, []);
+        }
+        
+        // Crear archivo de deudas si no existe
+        if (!await fs.pathExists(DEUDAS_FILE)) {
+            await fs.writeJson(DEUDAS_FILE, []);
+        }
     }
 }
 
@@ -750,7 +787,6 @@ async function startServer() {
     app.listen(PORT, () => {
         console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
         console.log(`📱 Sistema Administrativo - Óptica Luisa (Versión JSON)`);
-        console.log(`📄 Archivo de datos: ${FICHAS_FILE}`);
     });
 }
 
@@ -759,8 +795,5 @@ if (require.main === module) {
     startServer();
 }
 
-// Para Vercel (serverless)
+// Para Vercel (serverless) - sin inicialización de directorios
 module.exports = app;
-
-// Asegurar directorios en serverless
-ensureDirectories();
