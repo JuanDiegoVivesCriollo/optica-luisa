@@ -555,16 +555,15 @@ function displayStats(stats) {
             <h3>${stats.deudas.deudas_pendientes}</h3>
             <p>Deudas Pendientes</p>
         </div>
-        
-        <div class="stat-card">
-            <i class="fas fa-dollar-sign" style="color: var(--success-color);"></i>
-            <h3>$${stats.deudas.monto_total_cobrado.toFixed(2)}</h3>
+          <div class="stat-card">
+            <i class="fas fa-coins" style="color: var(--success-color);"></i>
+            <h3>S/${stats.deudas.monto_total_cobrado.toFixed(2)}</h3>
             <p>Total Cobrado</p>
         </div>
         
         <div class="stat-card">
             <i class="fas fa-exclamation-triangle" style="color: var(--warning-color);"></i>
-            <h3>$${stats.deudas.monto_pendiente_cobrar.toFixed(2)}</h3>
+            <h3>S/${stats.deudas.monto_pendiente_cobrar.toFixed(2)}</h3>
             <p>Pendiente por Cobrar</p>
         </div>
     `;
@@ -816,9 +815,8 @@ function createDeudaCard(deuda) {
                 <div class="ficha-info">
                     <h3>${escapeHtml(deuda.nombre_persona)}</h3>
                     <p>ID: ${deuda.id.substring(0, 8)}...</p>
-                </div>
-                <div class="ficha-image">
-                    <i class="fas fa-dollar-sign" style="color: var(--warning-color);"></i>
+                </div>                <div class="ficha-image">
+                    <i class="fas fa-coins" style="color: var(--warning-color);"></i>
                 </div>
             </div>
             
@@ -834,14 +832,13 @@ function createDeudaCard(deuda) {
             </div>
             
             <!-- Montos -->
-            <div class="deuda-amounts">
-                <div class="amount-item">
+            <div class="deuda-amounts">                <div class="amount-item">
                     <label>Total</label>
-                    <div class="amount">$${deuda.monto_total.toFixed(2)}</div>
+                    <div class="amount">S/${deuda.monto_total.toFixed(2)}</div>
                 </div>
                 <div class="amount-item">
                     <label>Pendiente</label>
-                    <div class="amount pending">$${deuda.saldo_pendiente.toFixed(2)}</div>
+                    <div class="amount pending">S/${deuda.saldo_pendiente.toFixed(2)}</div>
                 </div>
             </div>
             
@@ -930,20 +927,19 @@ function displayDeudaDetalles(deuda) {
                         <i class="${statusIcon}"></i>
                         ${statusText}
                     </span>
-                </div>
-                <div class="detalle-item">
+                </div>                <div class="detalle-item">
                     <label>Monto Total</label>
-                    <span style="font-weight: 600; font-size: 18px;">$${deuda.monto_total.toFixed(2)}</span>
+                    <span style="font-weight: 600; font-size: 18px;">S/${deuda.monto_total.toFixed(2)}</span>
                 </div>
                 <div class="detalle-item">
                     <label>Saldo Pendiente</label>
                     <span style="font-weight: 600; font-size: 18px; color: ${isPagada ? 'var(--success-color)' : 'var(--warning-color)'};">
-                        $${deuda.saldo_pendiente.toFixed(2)}
+                        S/${deuda.saldo_pendiente.toFixed(2)}
                     </span>
                 </div>
                 <div class="detalle-item">
                     <label>Total Pagado</label>
-                    <span style="font-weight: 600; color: var(--success-color);">$${deuda.total_pagado.toFixed(2)}</span>
+                    <span style="font-weight: 600; color: var(--success-color);">S/${deuda.total_pagado.toFixed(2)}</span>
                 </div>
                 <div class="detalle-item">
                     <label>Porcentaje Pagado</label>
@@ -984,7 +980,7 @@ function displayDeudaDetalles(deuda) {
         historialContainer.innerHTML = deuda.pagos_formateados.map(pago => `
             <div class="pago-item">
                 <div class="pago-info">
-                    <div class="pago-monto">$${pago.monto.toFixed(2)}</div>
+                    <div class="pago-monto">S/${pago.monto.toFixed(2)}</div>
                     ${pago.descripcion ? `<div class="pago-descripcion">${escapeHtml(pago.descripcion)}</div>` : ''}
                     <div class="pago-fecha">${pago.fecha_formateada}</div>
                 </div>
@@ -1009,7 +1005,7 @@ function displayDeudaDetalles(deuda) {
     const montoPagoInput = document.getElementById('monto_pago');
     if (montoPagoInput) {
         montoPagoInput.max = deuda.saldo_pendiente;
-        montoPagoInput.placeholder = `Máximo: $${deuda.saldo_pendiente.toFixed(2)}`;
+        montoPagoInput.placeholder = `Máximo: S/${deuda.saldo_pendiente.toFixed(2)}`;
     }
 }
 

@@ -487,11 +487,10 @@ app.post('/api/deudas/:id/pagos', async (req, res) => {
         // Calcular saldo actual
         const totalPagado = deuda.pagos ? deuda.pagos.reduce((sum, pago) => sum + pago.monto, 0) : 0;
         const saldoActual = deuda.monto_total - totalPagado;
-        
-        // Validar que el pago no exceda la deuda
+          // Validar que el pago no exceda la deuda
         if (parseFloat(monto) > saldoActual) {
             return res.status(400).json({ 
-                error: `El pago ($${monto}) excede el saldo pendiente ($${saldoActual.toFixed(2)})` 
+                error: `El pago (S/${monto}) excede el saldo pendiente (S/${saldoActual.toFixed(2)})` 
             });
         }
 
@@ -755,4 +754,13 @@ async function startServer() {
     });
 }
 
-startServer();
+// Para desarrollo local
+if (require.main === module) {
+    startServer();
+}
+
+// Para Vercel (serverless)
+module.exports = app;
+
+// Asegurar directorios en serverless
+ensureDirectories();
